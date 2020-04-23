@@ -5,15 +5,15 @@ translateHelp: true
 # @umijs/plugin-request
 
 
-`@umijs/plugin-request` 基于 [umi-request](https://github.com/umijs/umi-request) 和 [@umijs/hooks](https://github.com/umijs/hooks) 的 `useRequest` 提供了一套统一的网络请求和错误处理方案。
+`@umijs/plugin-request` is based on [umi-request](https://github.com/umijs/umi-request) and [@umijs/hooks](https://github.com/umijs/hooks) `useRequest` provides a unified network request and error handling solution.
 
-## 启用方式
+## How to enable
 
-默认启用。
+Enabled by default
 
-## 介绍
+## Introduction
 
-错误处理是所有项目都会遇到的问题，我们约定了一个接口格式规范如下：
+Error handling is a problem that all projects will encounter. We have agreed on an interface format specification as follows:
 
 ```typescript
 interface ErrorInfoStructure {
@@ -27,24 +27,24 @@ interface ErrorInfoStructure {
 }
 ```
 
-后端接口规范不满足的情况下你可以通过配置 `errorConfig.adaptor` 来做适配。当 `success` 返回是 `false` 的情况我们会按照 `showType` 和 `errorMessage` 来做统一的错误提示，同时抛出一个异常。
+If the backend interface specification is not satisfied, you can configure it by configuring `errorConfig.adaptor`. When `success` returns `false` we will follow `showType` and `errorMessage` for unified error notification and throw an exception.
 
-抛出的异常的格式为：
+The format of the exception thrown is:
 
 ```typescript
 interface RequestError extends Error {
-  data?: any; // 这里是后端返回的原始数据
+  data?: any; // Here is the raw data returned by the backend
   info?: ErrorInfoStructure;
 }
 ```
 
-另外你可以通过 `Error.name` 是否是 `BizError` 来判断是否是因为 `success` 为 `false` 抛出的错误。
+In addition, you can determine whether it is an error thrown by `success` being `false` by checking whether `Error.name` is `BizError`.
 
-## 配置
+## Configuration
 
-### 构建时配置
+### Build-time configuration
 
-当前支持的构建时配置如下：
+The currently supported build-time configuration is as follows:
 
 ```typescript
 export default {
@@ -58,11 +58,11 @@ export default {
 
 * Type: `string`
 
-`dataField` 对应接口统一格式中的数据字段，比如接口如果统一的规范是 `{ success: boolean, data: any}` ，那么就不需要配置，这样你通过 `useRequest` 消费的时候会生成一个默认的 `formatResult`，直接返回 `data` 中的数据，方便使用。如果你的后端接口不符合这个规范，可以自行配置 `dataField` 。配置为 `''` （空字符串）的时候不做处理。
+`dataField` corresponds to the `data` field in the unified format of the interface. For example, if the unified specification is `{success: boolean, data: any}`, then no configuration is required, so that when you consume through `useRequest`, a default data will be generated. The `formatResult` directly returns the data in `data` for ease of use. If your backend interface does not comply with this specification, you can configure `dataField` yourself. When configured as `''` (empty string), no processing is done.
 
-### 运行时配置
+### Runtime configuration
 
-在 `src/app.ts` 中你可以配置一些运行时的配置项来实现部分自定义需求。示例配置如下：
+In `src/app.ts` you can configure some runtime configuration items to achieve some custom requirements. The sample configuration is as follows:
 
 ```typescript
 import { RequestConfig } from 'umi';
@@ -76,13 +76,11 @@ export const request: RequestConfig = {
 };
 ```
 
-该配置返回一个对象。除了 `errorConfig` 和 `middlewares` 以外其它配置都是直接透传 [umi-request](https://github.com/umijs/umi-request) 的全局配置。
+This configuration returns an object. Except for `errorConfig` and` middlewares`, all other configurations are global configurations that directly pass through [umi-request](https://github.com/umijs/umi-request).
 
 #### errorConfig.adaptor
 
-当后端接口不满足该规范的时候你需要通过该配置把后端接口数据转换为该格式，该配置只是用于错误处理，不会影响最终传递给页面的数据格式。
-
-示例配置如下：
+When the back-end interface does not meet this specification, you need to convert the back-end interface data to this format through this configuration. The following configuration is only used for error handling and does not affect the final data format passed to the page.
 
 ```typescript
 import { RequestConfig } from 'umi';
@@ -102,11 +100,11 @@ export const request: RequestConfig = {
 
 #### errorConfig.errorPage
 
-当 `showType` 为 `9` 时，默认会跳转到 `/exception` 页面，你可以通过该配置来修改该路径。
+When `showType` is `9`, it will jump to `/exception` page by default, you can modify the path through this configuration.
 
 #### middlewares
 
-umi-request 提供[中间件机制](https://github.com/umijs/umi-request#middleware)，之前是通过 `request.use(middleware)` 的方式引入，现在可以通过 `request.middlewares` 进行配置。
+umi-request provides [middleware mechanism](https://github.com/umijs/umi-request#middleware), which was introduced through `request.use (middleware)` before, and can now be passed through `request.middlewares` To configure.
 
 ```typescript
 export const request = {
@@ -127,17 +125,17 @@ export const request = {
 
 #### requestInterceptors
 
-该配置接收一个数组，数组的每一项为一个 request 拦截器。等同于 umi-request 的 `request.interceptors.request.use()`。具体见 umi-request 的[拦截器文档](https://github.com/umijs/umi-request#interceptor)。
+This configuration receives an array, and each item of the array is a request interceptor. Equivalent to `request.interceptors.request.use ()` of umi-request. For details, see [Interceptor Document](https://github.com/umijs/umi-request#interceptor) of umi-request.
 
 #### responseInterceptors
 
-该配置接收一个数组，数组的每一项为一个 response 拦截器。等同于 umi-request 的 `request.interceptors.response.use()`。具体见 umi-request 的[拦截器文档](https://github.com/umijs/umi-request#interceptor)。
+This configuration receives an array, and each item in the array is a response interceptor. Equivalent to `request.interceptors.response.use ()` of umi-request. For details, see [Interceptor Document](https://github.com/umijs/umi-request#interceptor) of umi-request.
 
 ## API
 
 ### useRequest
 
-该插件内置了 [@umijs/use-request](https://hooks.umijs.org/zh-CN/async)，你可以在组件内通过该 Hook 简单便捷的消费数据。示例如下：
+The plug-in has built-in [@umijs/use-request](https://hooks.umijs.org/zh-CN/async), you can use the Hook in the component to easily and conveniently consume data. Examples are as follows:
 
 ```typescript
 import { useRequest } from 'umi';
@@ -156,20 +154,20 @@ export default () => {
 };
 ```
 
-更多配置你可以参考  [@umijs/use-request](https://hooks.umijs.org/zh-CN/async) 的文档，相比  `@umijs/use-request` 本身， `import { useRequest } from 'umi';` 有如下两点差异：
+For more configuration, you can refer to the documentation of [@umijs/use-request](https://hooks.umijs.org/zh-CN/async). Compared with `@umijs/use-request` itself, `import {useRequest} from 'umi';` There are two differences as follows:
 
-- 按照接口请求规范内置了 `formatResult: res => res?.data` 让你可以更方便的使用数据，当然你也可以自己配置 `formatResult` 来覆盖内置的这个逻辑。
-- 按照接口错误规范统一了错误处理逻辑。
+- According to the interface request specification, built-in `formatResult: res => res?.data` allows you to use the data more conveniently. Of course, you can also configure `formatResult` to override the built-in logic.
+- Unified error handling logic according to interface error specifications.
 
-你也可以查看知乎专栏文章[《useRequest- 蚂蚁中台标准请求 Hooks》](https://zhuanlan.zhihu.com/p/106796295)了解 useRequest。
+You can also check the Zhihu column [《useRequest- Ant Central Request for Hooks》](https://zhuanlan.zhihu.com/p/106796295) to understand useRequest.
 
 ### request
 
-通过 `import { request } from 'umi';` 你可以使用内置的请求方法。 `request` 接收两个参数，第一个参数是 `url`，第二个参数是请求的 `options`。`options` 具体格式参考 [umi-request](https://github.com/umijs/umi-request)。
+With `import {request} from 'umi';` you can use the built-in request method. `request` accepts two parameters, the first parameter is `url` and the second parameter is the requested options. Refer to [umi-request](https://github.com/umijs/umi-request) for the specific format of `options`.
 
-`request` 的大部分用法等同于 `umi-request`，一个不同的是 `options` 扩展了一个配置 `skipErrorHandler`，该配置为 `true` 是会跳过默认的错误处理，用于项目中部分特殊的接口。
+Most of the usage of `request` is equivalent to` umi-request`. One difference is that `options` extends a configuration `skipErrorHandler`. This configuration is `true` which will skip the default error handling and is used in the project part. Special interface.
 
-示例如下：
+Examples are as follows:
 
 ```typescript
 request('/api/user', {
@@ -182,7 +180,7 @@ request('/api/user', {
 
 ### RequestConfig
 
-这是一个 TypeScript 定义，它可以帮助你更好的配置运行时配置。
+This is a TypeScript definition, which can help you better configure the runtime configuration.
 
 ```typescript
 import { RequestConfig } from 'umi';
@@ -192,7 +190,7 @@ export const request: RequestConfig = {};
 
 ### ErrorShowType
 
-`import { ErrorShowType } from 'umi';` 这是一个 TypeScript 定义，定义了约定的格式中支持的 showType 的类型。
+`import { ErrorShowType } from 'umi';` This is a TypeScript definition that defines the types of showType supported in the agreed format.
 
 ```typescript
 export enum ErrorShowType {
